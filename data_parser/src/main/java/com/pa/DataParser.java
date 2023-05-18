@@ -38,7 +38,7 @@ public class DataParser {
                 parentToChildMap.remove(currentId);
 
                 GeoName geoName = allGeoNamesMap.get(currentId);
-                if(geoName == null) {
+                if (geoName == null) {
                     // It can be some cases where same id have more than one parent
                     continue;
                 }
@@ -131,6 +131,5 @@ public class DataParser {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
