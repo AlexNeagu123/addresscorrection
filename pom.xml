@@ -5,6 +5,7 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>data_parser</module>
+		<module>graph_saving</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
