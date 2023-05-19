@@ -14,7 +14,7 @@ public class Main {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
-            objectMapper.writeValue(new File("src/main/resources/out/geoNames.json"), dataParser.getAllGeoNames());
+            objectMapper.writeValue(new File("WebServer/src/main/resources/out/geoNames.json"), dataParser.getAllGeoNames());
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
