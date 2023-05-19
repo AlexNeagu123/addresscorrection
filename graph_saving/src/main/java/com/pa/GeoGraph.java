@@ -26,7 +26,6 @@ public class GeoGraph implements Serializable {
 
     public void addRoot(GeoNode node) {
         roots.add(node);
-        addNode(node);
     }
 
     public void saveToFile(String filePath) throws IOException {

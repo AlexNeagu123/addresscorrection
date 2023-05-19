@@ -12,6 +12,8 @@ public class Main {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             List<GeoName> parsedData = objectMapper.readValue(new File("src/main/resources/static/geoNames.json"), new TypeReference<List<GeoName>>() {});
+            GraphSaver graphSaver = new GraphSaver(parsedData);
+            graphSaver.saveTo("src/main/resources/static/graph.bin");
         } catch (IOException databindException) {
             System.out.println("Couldn't deserialize the JSON file. " + databindException.getMessage());
         }
