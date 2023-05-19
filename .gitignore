@@ -33,3 +33,4 @@ build/
 .vscode/
 
 data_parser/src/main/resources/
+src/main/resources/static
