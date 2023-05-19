@@ -29,6 +29,7 @@ public class DataParser {
         List<Long> countryIds = getAllCountryIds();
 
         for (Long countryId : countryIds) {
+            allGeoNames.add(allGeoNamesMap.get(countryId));
             Queue<Long> queue = new LinkedList<>();
             queue.add(countryId);
 
@@ -44,7 +45,6 @@ public class DataParser {
                 }
 
                 allGeoNamesMap.remove(currentId);
-                allGeoNames.add(geoName);
 
                 if (children != null) {
                     List<GeoName> childrenList = geoName.getChildren();
