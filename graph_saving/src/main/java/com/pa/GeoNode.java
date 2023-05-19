@@ -17,7 +17,6 @@ public class GeoNode implements Serializable {
         this.depth = depth;
         this.children = new ArrayList<>();
     }
-
     public void addChild(GeoNode child) {
         children.add(child);
     }
