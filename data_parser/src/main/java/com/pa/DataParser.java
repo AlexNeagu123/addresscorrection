@@ -16,36 +16,40 @@ public class DataParser {
     }
 
     public List<GeoName> getAllGeoNames() {
-        if(allGeoNames.isEmpty()){
+        if (allGeoNames.isEmpty()) {
             setAllGeoNames();
         }
         return allGeoNames;
     }
 
 
-    private void setAllGeoNames(){
+    private void setAllGeoNames() {
         getAllGeoNamesMap();
         getHierarchy();
         List<Long> countryIds = getAllCountryIds();
 
-        for(Long countryId : countryIds){
-            GeoName geoName = allGeoNamesMap.get(countryId);
-            allGeoNamesMap.remove(countryId);
-            allGeoNames.add(geoName);
-
+        for (Long countryId : countryIds) {
+            allGeoNames.add(allGeoNamesMap.get(countryId));
             Queue<Long> queue = new LinkedList<>();
             queue.add(countryId);
 
-            while(!queue.isEmpty()){
+            while (!queue.isEmpty()) {
                 Long currentId = queue.poll();
                 List<Long> children = parentToChildMap.get(currentId);
                 parentToChildMap.remove(currentId);
 
-                if(children != null){
+                GeoName geoName = allGeoNamesMap.get(currentId);
+                if(geoName == null) {
+                    // It can be some cases where same id have more than one parent
+                    continue;
+                }
+
+                allGeoNamesMap.remove(currentId);
+
+                if (children != null) {
                     List<GeoName> childrenList = geoName.getChildren();
-                    for(Long childId : children){
+                    for (Long childId : children) {
                         GeoName child = allGeoNamesMap.get(childId);
-                        allGeoNamesMap.remove(childId);
                         childrenList.add(child);
                         queue.add(childId);
                     }
@@ -56,14 +60,14 @@ public class DataParser {
 
 
     private void getHierarchy() {
-        try(Scanner sc = new Scanner(new File("data_parser/src/main/resources/hierarchy.txt"))) {
+        try (Scanner sc = new Scanner(new File("data_parser/src/main/resources/hierarchy.txt"))) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 String[] split = line.split("\t");
                 Long parentId = Long.parseLong(split[0]);
                 Long childId = Long.parseLong(split[1]);
 
-                if(!parentToChildMap.containsKey(parentId)){
+                if (!parentToChildMap.containsKey(parentId)) {
                     parentToChildMap.put(parentId, new ArrayList<>());
                 }
                 parentToChildMap.get(parentId).add(childId);
@@ -93,7 +97,7 @@ public class DataParser {
         return countryIds;
     }
 
-    private Map<Long, GeoName> getAllGeoNamesMap(){
+    private void getAllGeoNamesMap() {
         try (Scanner sc = new Scanner(new File("data_parser/src/main/resources/allCountries.txt"))) {
             String line = sc.nextLine();
             while (line.startsWith("#")) {
@@ -104,7 +108,7 @@ public class DataParser {
                 line = sc.nextLine();
                 String[] split = line.split("\t");
 
-                if(!split[6].trim().equals("P") && !split[6].trim().equals("A")) {
+                if (!split[6].trim().equals("P") && !split[6].trim().equals("A")) {
                     continue;
                 }
 
@@ -118,7 +122,7 @@ public class DataParser {
                         .build();
 
                 String[] alternateNames = split[3].split(",");
-                for(String alternateName : alternateNames){
+                for (String alternateName : alternateNames) {
                     geoName.getAlternateNames().add(alternateName.trim());
                 }
 
@@ -128,6 +132,5 @@ public class DataParser {
             throw new RuntimeException(e);
         }
 
-        return allGeoNamesMap;
     }
 }
