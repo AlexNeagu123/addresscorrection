@@ -60,7 +60,7 @@ public class DataParser {
 
 
     private void getHierarchy() {
-        try (Scanner sc = new Scanner(new File("DataParser/src/main/resources/hierarchy.txt"))) {
+        try (Scanner sc = new Scanner(new File("src/main/resources/hierarchy.txt"))) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 String[] split = line.split("\t");
@@ -79,7 +79,7 @@ public class DataParser {
 
     private List<Long> getAllCountryIds() {
         List<Long> countryIds = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File("DataParser/src/main/resources/countryInfo.txt"))) {
+        try (Scanner sc = new Scanner(new File("src/main/resources/countryInfo.txt"))) {
             String line = sc.nextLine();
             while (line.startsWith("#")) {
                 line = sc.nextLine();
@@ -98,7 +98,7 @@ public class DataParser {
     }
 
     private void getAllGeoNamesMap() {
-        try (Scanner sc = new Scanner(new File("DataParser/src/main/resources/allCountries.txt"))) {
+        try (Scanner sc = new Scanner(new File("src/main/resources/allCountries.txt"))) {
             String line = sc.nextLine();
             while (line.startsWith("#")) {
                 line = sc.nextLine();
