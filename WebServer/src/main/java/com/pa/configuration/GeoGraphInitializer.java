@@ -6,6 +6,7 @@ import com.pa.entity.GeoGraph;
 import com.pa.entity.GeoName;
 import com.pa.entity.GeoNode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class GeoGraphInitializer implements CommandLineRunner {
@@ -23,10 +25,12 @@ public class GeoGraphInitializer implements CommandLineRunner {
     public void run(String... args) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            List<GeoName> graphData = objectMapper.readValue(new File("src/main/resources/static/geoNames.json"), new TypeReference<List<GeoName>>() {});
+            List<GeoName> graphData = objectMapper.readValue(new File("src/main/resources/static/geoNames.json"), new TypeReference<List<GeoName>>() {
+            });
             buildGraphFromData(graphData);
         } catch (IOException ex) {
-            System.out.println("Couldn't deserialize the JSON file.");
+            log.error("Couldn't deserialize the resource JSON file: " + ex.getMessage());
+            System.exit(13);
         }
     }
 
@@ -39,7 +43,7 @@ public class GeoGraphInitializer implements CommandLineRunner {
             reduceTreeLevels(tree);
             insertTreeIntoGraph(tree);
         }
-        System.out.println("Graph successfully initialized!");
+        log.info("Graph successfully initialized!");
     }
 
     private GeoGraph generateTree(GeoName rootData) {
