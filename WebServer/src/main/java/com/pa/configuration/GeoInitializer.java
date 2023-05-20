@@ -2,12 +2,14 @@ package com.pa.configuration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Multimap;
 import com.pa.entity.GeoGraph;
 import com.pa.entity.GeoName;
 import com.pa.entity.GeoNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -18,8 +20,10 @@ import java.util.List;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class GeoGraphInitializer implements CommandLineRunner {
+@Order(1)
+public class GeoInitializer implements CommandLineRunner {
     private final GeoGraph geoGraph;
+    private final Multimap<String, GeoNode> nameToNodeMap;
 
     @Override
     public void run(String... args) {
@@ -55,12 +59,19 @@ public class GeoGraphInitializer implements CommandLineRunner {
     }
 
     private void dfsTraversal(GeoGraph tree, GeoNode currentNode, GeoName nodeData) {
+        //add to map
+        nameToNodeMap.put(currentNode.getAsciiName(), currentNode);
+        for(String alternateName : nodeData.getAlternateNames()) {
+            nameToNodeMap.put(alternateName, currentNode);
+        }
+
         for (GeoName childData : nodeData.getChildren()) {
             if (childData == null) {
                 continue;
             }
             GeoNode childNode = new GeoNode(childData.getAsciiName(), currentNode.getDepth() + 1, currentNode);
             currentNode.addChild(childNode);
+
             dfsTraversal(tree, childNode, childData);
         }
     }
