@@ -60,18 +60,18 @@ public class GeoInitializer implements CommandLineRunner {
 
     private void dfsTraversal(GeoGraph tree, GeoNode currentNode, GeoName nodeData) {
         //add to map
-        nameToNodeMap.put(currentNode.getAsciiName(), currentNode);
-        for(String alternateName : nodeData.getAlternateNames()) {
-            nameToNodeMap.put(alternateName, currentNode);
+        nameToNodeMap.put(currentNode.getAsciiName().toLowerCase(), currentNode);
+        for (String alternateName : nodeData.getAlternateNames()) {
+            nameToNodeMap.put(alternateName.toLowerCase(), currentNode);
         }
 
         for (GeoName childData : nodeData.getChildren()) {
             if (childData == null) {
                 continue;
             }
+
             GeoNode childNode = new GeoNode(childData.getAsciiName(), currentNode.getDepth() + 1, currentNode);
             currentNode.addChild(childNode);
-
             dfsTraversal(tree, childNode, childData);
         }
     }

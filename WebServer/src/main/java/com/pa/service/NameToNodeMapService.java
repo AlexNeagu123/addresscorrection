@@ -13,10 +13,14 @@ public class NameToNodeMapService {
     /**
      * For testing purposes only
      */
-    public void printBranch(String countryAsciiName) {
-        for (GeoNode node : nameToNodeMap.get(countryAsciiName)) {
-            GeoNode root = getRoot(node);
-            dfsTraversal(root);
+    public void printBranches(String locationAsciiName) {
+        for (GeoNode node : nameToNodeMap.get(locationAsciiName)) {
+            if (node.getDepth() != 3) {
+                continue;
+            }
+            System.out.println("A candidate branch was found");
+            System.out.println(node.getParent().getParent().getAsciiName() + " - " +
+                    node.getParent().getAsciiName() + " - " + node.getAsciiName());
         }
     }
 

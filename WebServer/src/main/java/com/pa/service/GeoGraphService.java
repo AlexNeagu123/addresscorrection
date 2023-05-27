@@ -1,5 +1,6 @@
 package com.pa.service;
 
+import com.pa.entity.Address;
 import com.pa.entity.GeoGraph;
 import com.pa.entity.GeoNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,14 @@ public class GeoGraphService {
     @Autowired
     public GeoGraphService(GeoGraph geoGraph) {
         this.geoGraph = geoGraph;
+    }
+
+    public Address getBranch(GeoNode geoNode) {
+        return Address.builder()
+                .country(geoNode.getParent().getParent().getAsciiName())
+                .state(geoNode.getParent().getAsciiName())
+                .city(geoNode.getAsciiName())
+                .build();
     }
 
     /**

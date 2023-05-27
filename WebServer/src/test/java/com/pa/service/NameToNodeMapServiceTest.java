@@ -1,6 +1,5 @@
 package com.pa.service;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,12 +10,12 @@ public class NameToNodeMapServiceTest {
     private NameToNodeMapService nameToNodeService;
 
     @Test
-    void givenNewYork_whenPrintBranchMethodCalled_thenItPrintsData() {
-        nameToNodeService.printBranch("New York");
+    void givenWashington_whenPrintBranchMethodCalled_thenItPrintsData() {
+        nameToNodeService.printBranches("Washington");
     }
 
     @Test
     void givenIasi_whenPrintBranchMethodCalled_thenItPrintsData() {
-        nameToNodeService.printBranch("Iasi");
+        nameToNodeService.printBranches("Iasi");
     }
 }
