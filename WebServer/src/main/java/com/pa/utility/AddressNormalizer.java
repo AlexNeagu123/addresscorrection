@@ -3,20 +3,38 @@ package com.pa.utility;
 import com.pa.entity.Address;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AddressNormalizer {
     private static final List<Pair<Integer, Integer>> badCharactersRange = Arrays.asList(Pair.of(0, 64), Pair.of(91, 95), Pair.of(123, 190));
+    private static final int WORD_LIMIT = 3;
 
-    public static String[] normalizeAddress(Address address) {
+    public static List<String> getCompoundTokens(List<String> singleTokens) {
+        List<String> compoundTokens = new ArrayList<>();
+        for (int i = 0; i < singleTokens.size(); ++i) {
+            StringBuilder currentToken = new StringBuilder();
+            for (int j = i; j < Math.min(i + WORD_LIMIT, singleTokens.size()); ++j) {
+                if (j > i) {
+                    currentToken.append(" ");
+                }
+                currentToken.append(singleTokens.get(j));
+                compoundTokens.add(currentToken.toString());
+            }
+        }
+        return compoundTokens;
+    }
+
+    public static List<String> normalizeAddress(Address address) {
         transformNullToEmptyString(address);
         makeAddressLowercase(address);
 
         String addressStr = transformAddressToString(address);
         addressStr = removeBadCharacters(addressStr);
         addressStr = removeAdditionalSpaces(addressStr);
-        return Arrays.stream(addressStr.split(" ")).distinct().toArray(String[]::new);
+        return Arrays.stream(addressStr.split(" ")).distinct().toList();
     }
 
     private static void transformNullToEmptyString(Address address) {

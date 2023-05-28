@@ -24,6 +24,7 @@ import java.util.List;
 public class GeoInitializer implements CommandLineRunner {
     private final GeoGraph geoGraph;
     private final Multimap<String, GeoNode> nameToNodeMap;
+    private final Multimap<String, String> asciiToAlternativeMap;
 
     @Override
     public void run(String... args) {
@@ -62,8 +63,17 @@ public class GeoInitializer implements CommandLineRunner {
         //add to map
         nameToNodeMap.put(currentNode.getAsciiName().toLowerCase(), currentNode);
         for (String alternateName : nodeData.getAlternateNames()) {
-            nameToNodeMap.put(alternateName.toLowerCase(), currentNode);
+            String alternateNameLower = alternateName.toLowerCase();
+            nameToNodeMap.put(alternateNameLower, currentNode);
+
+//            for(int i = 0; i < alternateNameLower.length(); i++) {
+//                nameToNodeMap.put(removeCharAtIndex(alternateNameLower, i), currentNode);
+//            }
         }
+
+        asciiToAlternativeMap.putAll(currentNode.getAsciiName().toLowerCase(),
+                nodeData.getAlternateNames().stream().map(String::toLowerCase).toList());
+
 
         for (GeoName childData : nodeData.getChildren()) {
             if (childData == null) {
@@ -106,4 +116,11 @@ public class GeoInitializer implements CommandLineRunner {
             this.geoGraph.addRoot(root);
         }
     }
+
+//    private static String removeCharAtIndex(String str, int index) {
+//        if (index < 0 || index >= str.length()) {
+//            return str;
+//        }
+//        return str.substring(0, index) + str.substring(index + 1);
+//    }
 }

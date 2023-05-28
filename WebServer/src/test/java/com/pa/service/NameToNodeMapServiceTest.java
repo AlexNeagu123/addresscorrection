@@ -11,7 +11,7 @@ public class NameToNodeMapServiceTest {
 
     @Test
     void givenWashington_whenPrintBranchMethodCalled_thenItPrintsData() {
-        nameToNodeService.printBranches("Washington");
+        nameToNodeService.printBranches("Municipiul Iasi");
     }
 
     @Test

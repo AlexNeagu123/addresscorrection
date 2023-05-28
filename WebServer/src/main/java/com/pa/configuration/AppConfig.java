@@ -18,4 +18,8 @@ public class AppConfig {
     public Multimap<String, GeoNode> nameToNodeMap() {
         return ArrayListMultimap.create();
     }
+    @Bean
+    public Multimap<String, String> asciiToAlternativeMap() {
+        return ArrayListMultimap.create();
+    }
 }

@@ -20,7 +20,7 @@ public class AddressCorrectionController {
 
     @PostMapping
     @Operation(tags = {"AddressCorrection"})
-    public List<Address> correctAddress(@RequestBody @Valid Address address) {
+    public Address correctAddress(@RequestBody @Valid Address address) {
         return addressCorrectionService.correctAddress(address);
     }
 }

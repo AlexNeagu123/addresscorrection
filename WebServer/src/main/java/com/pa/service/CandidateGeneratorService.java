@@ -1,34 +1,26 @@
-package com.pa.utility;
+package com.pa.service;
 
 import com.google.common.collect.Multimap;
 import com.pa.entity.Address;
 import com.pa.entity.GeoNode;
-import com.pa.service.GeoGraphService;
+import com.pa.utility.AddressNormalizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
-public class CandidateGenerator {
-    private static final int WORD_LIMIT = 3;
-
+public class CandidateGeneratorService {
     private final GeoGraphService geoGraphService;
     private final Multimap<String, GeoNode> nameToNodeMap;
 
-    public List<Address> generateCandidateAddresses(String[] tokens) {
+    public List<Address> generateCandidateAddresses(List<String> tokens) {
         List<Address> candidateAddresses = new ArrayList<>();
-        for (int i = 0; i < tokens.length; ++i) {
-            StringBuilder currentToken = new StringBuilder();
-            for (int j = i; j < Math.min(i + WORD_LIMIT, tokens.length); ++j) {
-                if (j > i) {
-                    currentToken.append(" ");
-                }
-                currentToken.append(tokens[j]);
-                candidateAddresses.addAll(findAllBranches(currentToken.toString()));
-            }
+        for (String currentToken : AddressNormalizer.getCompoundTokens(tokens)) {
+            candidateAddresses.addAll(findAllBranches(currentToken));
         }
         return candidateAddresses;
     }
