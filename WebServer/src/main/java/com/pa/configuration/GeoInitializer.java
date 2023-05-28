@@ -9,7 +9,6 @@ import com.pa.entity.GeoNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -20,7 +19,6 @@ import java.util.List;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-@Order(1)
 public class GeoInitializer implements CommandLineRunner {
     private final GeoGraph geoGraph;
     private final Multimap<String, GeoNode> nameToNodeMap;
@@ -72,7 +70,8 @@ public class GeoInitializer implements CommandLineRunner {
         }
 
         asciiToAlternativeMap.putAll(currentNode.getAsciiName().toLowerCase(),
-                nodeData.getAlternateNames().stream().map(String::toLowerCase).toList());
+                nodeData.getAlternateNames().stream().map(String::toLowerCase)
+                        .filter(x -> !x.equals("")).toList());
 
 
         for (GeoName childData : nodeData.getChildren()) {

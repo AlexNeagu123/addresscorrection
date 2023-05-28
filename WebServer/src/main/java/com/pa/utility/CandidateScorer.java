@@ -23,6 +23,7 @@ public class CandidateScorer {
         if (bestCandidate == null) {
             computeBestCandidate();
         }
+        System.out.println("====================================");
         return bestCandidate;
     }
 
@@ -31,6 +32,7 @@ public class CandidateScorer {
         int bestScore = 0;
         for (Address candidateAddress : candidateSolutions) {
             int score = computeScore(candidateAddress);
+            System.out.println("Candidate: " + candidateAddress + " Score: " + score);
             if (score > bestScore) {
                 bestScore = score;
                 this.bestCandidate = candidateAddress;
@@ -47,13 +49,13 @@ public class CandidateScorer {
     private int getScoreFromField(String field, ScoringConstants exactMatchEnum, ScoringConstants alternateMatchEnum) {
         int score = 0;
         for (String token : addressTokens) {
-            if (token.equalsIgnoreCase(field)) {
+            if (token.equalsIgnoreCase(field.toLowerCase())) {
                 score += exactMatchEnum.getScore();
-            }
-            if (asciiToAlternativeMap.containsKey(token) && asciiToAlternativeMap.get(token).contains(field)) {
+            } else if (asciiToAlternativeMap.containsKey(field.toLowerCase()) && asciiToAlternativeMap.get(field.toLowerCase()).contains(token)) {
                 score += alternateMatchEnum.getScore();
             }
         }
+        System.out.print("Field: " + field + " Score: " + score + " ");
         return score;
     }
 }

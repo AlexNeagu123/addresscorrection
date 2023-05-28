@@ -33,8 +33,9 @@ public class AddressNormalizer {
 
         String addressStr = transformAddressToString(address);
         addressStr = removeBadCharacters(addressStr);
-        addressStr = removeAdditionalSpaces(addressStr);
-        return Arrays.stream(addressStr.split(" ")).distinct().toList();
+        addressStr = removeAdditionalSpaces(addressStr).trim();
+        System.out.println("Normalized address: " + addressStr);
+        return Arrays.stream(addressStr.split("\s+")).distinct().toList();
     }
 
     private static void transformNullToEmptyString(Address address) {

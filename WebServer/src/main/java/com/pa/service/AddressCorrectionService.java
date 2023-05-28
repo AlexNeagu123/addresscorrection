@@ -22,6 +22,7 @@ public class AddressCorrectionService {
 
     public Address correctAddress(Address address) {
         List<String> addressTokens = AddressNormalizer.normalizeAddress(address);
+        System.out.println("Address tokens: " + addressTokens);
         List<Address> candidateAddresses = candidateGenerator.generateCandidateAddresses(addressTokens);
         HashSet<String> compoundTokensSet = new HashSet<>(AddressNormalizer.getCompoundTokens(addressTokens));
 
