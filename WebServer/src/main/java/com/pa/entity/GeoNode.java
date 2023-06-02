@@ -1,6 +1,8 @@
 package com.pa.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,13 +10,18 @@ import java.util.List;
 @Data
 public class GeoNode {
     private final String asciiName;
+    private final Long geonameId;
     private int depth;
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private GeoNode parent;
-    // is null if depth is equal to 1
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<GeoNode> children;
 
-    public GeoNode(String asciiName, int depth, GeoNode parent) {
+    public GeoNode(String asciiName, Long geonameId, int depth, GeoNode parent) {
         this.asciiName = asciiName;
+        this.geonameId = geonameId;
         this.depth = depth;
         this.children = new ArrayList<>();
         this.parent = parent;
