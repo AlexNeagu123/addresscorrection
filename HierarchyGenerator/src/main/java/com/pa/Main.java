@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.util.*;
 
 public class Main {
-    private static Map<String, String> isoToGeoNameId = new HashMap<>();
-    private static Set<String> geoNameIds = new HashSet<>();
-    private static Map<String, String> admCodeToGeoNameId = new HashMap<>();
+    private static final Map<String, String> isoToGeoNameId = new HashMap<>();
+    private static final Set<String> geoNameIds = new HashSet<>();
+    private static final Map<String, String> admCodeToGeoNameId = new HashMap<>();
 
     public static void main(String[] args) {
         mapIsoCodesWithIds();

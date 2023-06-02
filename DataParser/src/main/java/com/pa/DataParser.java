@@ -27,6 +27,7 @@ public class DataParser {
         getAllGeoNamesMap();
         getHierarchy();
         List<Long> countryIds = getAllCountryIds();
+        System.out.println(countryIds.size());
 
         for (Long countryId : countryIds) {
             allGeoNames.add(allGeoNamesMap.get(countryId));
@@ -79,7 +80,7 @@ public class DataParser {
 
     private List<Long> getAllCountryIds() {
         List<Long> countryIds = new ArrayList<>();
-        try (Scanner sc = new Scanner(new File("src/main/resources/countryInfo.txt"))) {
+        try (Scanner sc = new Scanner(new File("src/main/resources/appCountriesInfo.txt"))) {
             String line = sc.nextLine();
             while (line.startsWith("#")) {
                 line = sc.nextLine();
