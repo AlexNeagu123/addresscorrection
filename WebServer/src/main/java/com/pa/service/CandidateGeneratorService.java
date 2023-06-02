@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import com.pa.entity.Address;
 import com.pa.entity.GeoNode;
 import com.pa.utility.AddressNormalizer;
+import com.pa.utility.FieldToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,19 @@ public class CandidateGeneratorService {
     private final GeoGraphService geoGraphService;
     private final Multimap<String, GeoNode> nameToNodeMap;
 
-    public List<Address> generateCandidateAddresses(List<String> tokens) {
-        List<Address> candidateAddresses = new ArrayList<>();
-        for (String currentToken : AddressNormalizer.getCompoundTokens(tokens)) {
-            candidateAddresses.addAll(findAllBranches(currentToken));
+    public List<Address> generateCandidateAddresses(List<FieldToken> fieldTokens) {
+        List<String> s = fieldTokens.stream().map(FieldToken::getToken).distinct().toList();
+        for(String tok : s) {
+            List<Address> branches = new ArrayList<>();
+            branches.addAll(findAllBranches(tok));
+            System.out.println(tok + " " + branches);
         }
-        return candidateAddresses;
+        return fieldTokens.stream()
+                .map(FieldToken::getToken)
+                .distinct()
+                .map(this::findAllBranches)
+                .flatMap(List::stream)
+                .toList();
     }
 
     private List<Address> findAllBranches(String token) {

@@ -6,6 +6,7 @@ import com.pa.entity.GeoName;
 import com.pa.entity.GeoNode;
 import com.pa.utility.AddressNormalizer;
 import com.pa.utility.CandidateScorer;
+import com.pa.utility.FieldToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +22,10 @@ public class AddressCorrectionService {
     private final Multimap<String, String> asciiToAlternativeMap;
 
     public Address correctAddress(Address address) {
-        List<String> addressTokens = AddressNormalizer.normalizeAddress(address);
-        System.out.println("Address tokens: " + addressTokens);
-        List<Address> candidateAddresses = candidateGenerator.generateCandidateAddresses(addressTokens);
-        HashSet<String> compoundTokensSet = new HashSet<>(AddressNormalizer.getCompoundTokens(addressTokens));
-
+        List<FieldToken> fieldTokens = AddressNormalizer.normalizeAddress(address);
+//        System.out.println("Address tokens: " + fieldTokens);
+        List<Address> candidateAddresses = candidateGenerator.generateCandidateAddresses(fieldTokens);
+        HashSet<FieldToken> compoundTokensSet = new HashSet<>(AddressNormalizer.getCompoundTokens(fieldTokens));
         CandidateScorer candidateScorer = new CandidateScorer(compoundTokensSet, candidateAddresses, asciiToAlternativeMap);
         return candidateScorer.getBestCandidate();
     }

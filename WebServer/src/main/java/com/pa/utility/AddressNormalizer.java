@@ -3,39 +3,47 @@ package com.pa.utility;
 import com.pa.entity.Address;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 public class AddressNormalizer {
     private static final List<Pair<Integer, Integer>> badCharactersRange = Arrays.asList(Pair.of(0, 64), Pair.of(91, 95), Pair.of(123, 190));
     private static final int WORD_LIMIT = 3;
 
-    public static List<String> getCompoundTokens(List<String> singleTokens) {
-        List<String> compoundTokens = new ArrayList<>();
-        for (int i = 0; i < singleTokens.size(); ++i) {
+    public static List<FieldToken> getCompoundTokens(List<FieldToken> fieldTokens) {
+        List<FieldToken> compoundTokens = new ArrayList<>();
+        for (int i = 0; i < fieldTokens.size(); ++i) {
             StringBuilder currentToken = new StringBuilder();
-            for (int j = i; j < Math.min(i + WORD_LIMIT, singleTokens.size()); ++j) {
+            Integer currentFieldId = fieldTokens.get(i).getFieldId();
+            for (int j = i; j < Math.min(i + WORD_LIMIT, fieldTokens.size()); ++j) {
+                if (!Objects.equals(currentFieldId, fieldTokens.get(j).getFieldId())) {
+                    break;
+                }
                 if (j > i) {
                     currentToken.append(" ");
                 }
-                currentToken.append(singleTokens.get(j));
-                compoundTokens.add(currentToken.toString());
+                currentToken.append(fieldTokens.get(j).getToken());
+                compoundTokens.add(new FieldToken(currentToken.toString(), currentFieldId));
             }
         }
         return compoundTokens;
     }
 
-    public static List<String> normalizeAddress(Address address) {
+    public static List<FieldToken> normalizeAddress(Address address) {
         transformNullToEmptyString(address);
         makeAddressLowercase(address);
 
-        String addressStr = transformAddressToString(address);
-        addressStr = removeBadCharacters(addressStr);
-        addressStr = removeAdditionalSpaces(addressStr).trim();
-        System.out.println("Normalized address: " + addressStr);
-        return Arrays.stream(addressStr.split("\s+")).distinct().toList();
+        List<FieldToken> allFieldTokens = transformAddressToString(address);
+        for (FieldToken fieldToken : allFieldTokens) {
+            String strToken = fieldToken.getToken();
+            fieldToken.setToken(removeBadCharacters(strToken));
+        }
+
+        System.out.println("Normalized field tokens: " + allFieldTokens);
+        return allFieldTokens;
     }
 
     private static void transformNullToEmptyString(Address address) {
@@ -50,8 +58,21 @@ public class AddressNormalizer {
         }
     }
 
-    private static String transformAddressToString(Address address) {
-        return address.getCountry() + " " + address.getState() + " " + address.getCity();
+    private static List<FieldToken> transformAddressToString(Address address) {
+        List<FieldToken> allFieldTokens = new ArrayList<>();
+        allFieldTokens.addAll(getFieldTokens(address.getCountry(), 0));
+        allFieldTokens.addAll(getFieldTokens(address.getState(), 1));
+        allFieldTokens.addAll(getFieldTokens(address.getCity(), 2));
+        return allFieldTokens;
+    }
+
+    private static List<FieldToken> getFieldTokens(String field, Integer fieldId) {
+        List<FieldToken> fieldTokens = new ArrayList<>();
+        List<String> strTokens = Arrays.stream(field.split("\s+")).distinct().toList();
+        for (String strToken : strTokens) {
+            fieldTokens.add(new FieldToken(strToken, fieldId));
+        }
+        return fieldTokens;
     }
 
     private static void makeAddressLowercase(Address address) {
@@ -72,9 +93,5 @@ public class AddressNormalizer {
             }
         }
         return addressStr;
-    }
-
-    private static String removeAdditionalSpaces(String addressStr) {
-        return addressStr.replaceAll("\\s+", " ");
     }
 }

@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Component
@@ -53,26 +55,23 @@ public class GeoInitializer implements CommandLineRunner {
         GeoGraph tree = new GeoGraph();
         GeoNode root = new GeoNode(rootData.getAsciiName(), 1, null);
         tree.addRoot(root);
-        dfsTraversal(tree, root, rootData);
+        dfsTraversal(root, rootData);
         return tree;
     }
 
-    private void dfsTraversal(GeoGraph tree, GeoNode currentNode, GeoName nodeData) {
+    private void dfsTraversal(GeoNode currentNode, GeoName nodeData) {
+        Set<String> uniqueAlternateNames = nodeData.getAlternateNames().stream()
+                .map(String::toLowerCase)
+                .filter(x -> !x.equals("") && !x.equals(currentNode.getAsciiName().toLowerCase()))
+                .collect(Collectors.toSet());
+
+        asciiToAlternativeMap.putAll(currentNode.getAsciiName().toLowerCase(), new ArrayList<>(uniqueAlternateNames));
+
         //add to map
         nameToNodeMap.put(currentNode.getAsciiName().toLowerCase(), currentNode);
-        for (String alternateName : nodeData.getAlternateNames()) {
-            String alternateNameLower = alternateName.toLowerCase();
-            nameToNodeMap.put(alternateNameLower, currentNode);
-
-//            for(int i = 0; i < alternateNameLower.length(); i++) {
-//                nameToNodeMap.put(removeCharAtIndex(alternateNameLower, i), currentNode);
-//            }
+        for (String alternateName : asciiToAlternativeMap.get(currentNode.getAsciiName().toLowerCase())) {
+            nameToNodeMap.put(alternateName, currentNode);
         }
-
-        asciiToAlternativeMap.putAll(currentNode.getAsciiName().toLowerCase(),
-                nodeData.getAlternateNames().stream().map(String::toLowerCase)
-                        .filter(x -> !x.equals("")).toList());
-
 
         for (GeoName childData : nodeData.getChildren()) {
             if (childData == null) {
@@ -81,7 +80,7 @@ public class GeoInitializer implements CommandLineRunner {
 
             GeoNode childNode = new GeoNode(childData.getAsciiName(), currentNode.getDepth() + 1, currentNode);
             currentNode.addChild(childNode);
-            dfsTraversal(tree, childNode, childData);
+            dfsTraversal(childNode, childData);
         }
     }
 
@@ -115,11 +114,4 @@ public class GeoInitializer implements CommandLineRunner {
             this.geoGraph.addRoot(root);
         }
     }
-
-//    private static String removeCharAtIndex(String str, int index) {
-//        if (index < 0 || index >= str.length()) {
-//            return str;
-//        }
-//        return str.substring(0, index) + str.substring(index + 1);
-//    }
 }

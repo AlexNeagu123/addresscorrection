@@ -4,16 +4,17 @@ import com.google.common.collect.Multimap;
 import com.pa.entity.Address;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class CandidateScorer {
-    private final Set<String> addressTokens;
+    private final Set<FieldToken> fieldTokens;
     private final List<Address> candidateSolutions;
     private final Multimap<String, String> asciiToAlternativeMap;
     private Address bestCandidate;
 
-    public CandidateScorer(Set<String> addressTokens, List<Address> candidateSolutions, Multimap<String, String> asciiToAlternativeMap) {
-        this.addressTokens = addressTokens;
+    public CandidateScorer(Set<FieldToken> fieldTokens, List<Address> candidateSolutions, Multimap<String, String> asciiToAlternativeMap) {
+        this.fieldTokens = fieldTokens;
         this.candidateSolutions = candidateSolutions;
         this.asciiToAlternativeMap = asciiToAlternativeMap;
         this.bestCandidate = null;
@@ -29,9 +30,9 @@ public class CandidateScorer {
 
     private void computeBestCandidate() {
         this.bestCandidate = candidateSolutions.get(0);
-        int bestScore = 0;
+        double bestScore = 0;
         for (Address candidateAddress : candidateSolutions) {
-            int score = computeScore(candidateAddress);
+            double score = computeScore(candidateAddress);
             System.out.println("Candidate: " + candidateAddress + " Score: " + score);
             if (score > bestScore) {
                 bestScore = score;
@@ -40,22 +41,27 @@ public class CandidateScorer {
         }
     }
 
-    private int computeScore(Address candidateAddress) {
-        return getScoreFromField(candidateAddress.getCity(), ScoringConstants.CITY_EXACT_MATCH, ScoringConstants.CITY_ALTERNATE_MATCH)
-                + getScoreFromField(candidateAddress.getState(), ScoringConstants.STATE_EXACT_MATCH, ScoringConstants.STATE_ALTERNATE_MATCH)
-                + getScoreFromField(candidateAddress.getCountry(), ScoringConstants.COUNTRY_EXACT_MATCH, ScoringConstants.COUNTRY_ALTERNATE_MATCH);
+    private double computeScore(Address candidateAddress) {
+        return getScoreFromField(candidateAddress.getCity(), 2, ScoringConstants.CITY_EXACT_MATCH, ScoringConstants.CITY_ALTERNATE_MATCH)
+                + getScoreFromField(candidateAddress.getState(), 1, ScoringConstants.STATE_EXACT_MATCH, ScoringConstants.STATE_ALTERNATE_MATCH)
+                + getScoreFromField(candidateAddress.getCountry(), 0, ScoringConstants.COUNTRY_EXACT_MATCH, ScoringConstants.COUNTRY_ALTERNATE_MATCH);
     }
 
-    private int getScoreFromField(String field, ScoringConstants exactMatchEnum, ScoringConstants alternateMatchEnum) {
-        int score = 0;
-        for (String token : addressTokens) {
-            if (token.equalsIgnoreCase(field.toLowerCase())) {
+    private double getScoreFromField(String currentField, Integer currentFieldId, ScoringConstants exactMatchEnum, ScoringConstants alternateMatchEnum) {
+        double score = 0;
+        for (FieldToken fieldToken : fieldTokens) {
+            if (fieldToken.getToken().equalsIgnoreCase(currentField.toLowerCase())) {
                 score += exactMatchEnum.getScore();
-            } else if (asciiToAlternativeMap.containsKey(field.toLowerCase()) && asciiToAlternativeMap.get(field.toLowerCase()).contains(token)) {
+            } else if (asciiToAlternativeMap.containsKey(currentField.toLowerCase()) && asciiToAlternativeMap.get(currentField.toLowerCase()).contains(fieldToken.getToken())) {
                 score += alternateMatchEnum.getScore();
+            } else {
+                continue;
+            }
+            if (Objects.equals(fieldToken.getFieldId(), currentFieldId)) {
+                score += ScoringConstants.POSITION_MATCH.getScore();
             }
         }
-        System.out.print("Field: " + field + " Score: " + score + " ");
+        System.out.print("Field: " + currentField + " Score: " + score + " ");
         return score;
     }
 }
