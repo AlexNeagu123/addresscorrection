@@ -426,7 +426,7 @@ class AddressCorrectionServiceTest {
     }
 
     // ======================================================================================================================
-    // 10 tests with one field deletion (mainly country) + alternate names + cross-fields on all fields 
+    // 10 tests with one field deletion (mainly country) + alternate names + cross-fields on all fields
     @Test
     void givenBrazilFederalDistrictBrasiliaWithAlternateNames_whenDeletedCountryFieldAndSwappingRemainingFields_thenCorrectTheAddress() {
         Address correctAddress = new Address("Federative Republic of Brazil", "Federal District", "Brasilia");
