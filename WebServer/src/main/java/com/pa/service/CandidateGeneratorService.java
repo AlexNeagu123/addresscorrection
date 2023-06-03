@@ -2,11 +2,10 @@ package com.pa.service;
 
 import com.google.common.collect.Multimap;
 import com.pa.entity.Address;
+import com.pa.entity.Branch;
 import com.pa.entity.GeoNode;
-import com.pa.utility.AddressNormalizer;
-import com.pa.utility.FieldToken;
+import com.pa.entity.FieldToken;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,13 +17,7 @@ public class CandidateGeneratorService {
     private final GeoGraphService geoGraphService;
     private final Multimap<String, GeoNode> nameToNodeMap;
 
-    public List<Address> generateCandidateAddresses(List<FieldToken> fieldTokens) {
-        List<String> s = fieldTokens.stream().map(FieldToken::getToken).distinct().toList();
-        for(String tok : s) {
-            List<Address> branches = new ArrayList<>();
-            branches.addAll(findAllBranches(tok));
-            System.out.println(tok + " " + branches);
-        }
+    public List<Branch> generateCandidateAddresses(List<FieldToken> fieldTokens) {
         return fieldTokens.stream()
                 .map(FieldToken::getToken)
                 .distinct()
@@ -33,8 +26,8 @@ public class CandidateGeneratorService {
                 .toList();
     }
 
-    private List<Address> findAllBranches(String token) {
-        List<Address> allBranches = new ArrayList<>();
+    private List<Branch> findAllBranches(String token) {
+        List<Branch> allBranches = new ArrayList<>();
         for (GeoNode geoNode : nameToNodeMap.get(token)) {
             if (geoNode.getDepth() != 3) {
                 continue;

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class GeoInitializer implements CommandLineRunner {
     private final GeoGraph geoGraph;
     private final Multimap<String, GeoNode> nameToNodeMap;
-    private final Multimap<String, String> asciiToAlternativeMap;
+    private final Multimap<GeoNode, String> nodeToAlternativeMap;
 
     @Override
     public void run(String... args) {
@@ -53,32 +53,34 @@ public class GeoInitializer implements CommandLineRunner {
 
     private GeoGraph generateTree(GeoName rootData) {
         GeoGraph tree = new GeoGraph();
-        GeoNode root = new GeoNode(rootData.getAsciiName(), 1, null);
+        GeoNode root = new GeoNode(rootData.getAsciiName(), rootData.getGeoNameId(), 1, null);
         tree.addRoot(root);
         dfsTraversal(root, rootData);
         return tree;
     }
 
     private void dfsTraversal(GeoNode currentNode, GeoName nodeData) {
+        // extract unique alternate names
         Set<String> uniqueAlternateNames = nodeData.getAlternateNames().stream()
                 .map(String::toLowerCase)
                 .filter(x -> !x.equals("") && !x.equals(currentNode.getAsciiName().toLowerCase()))
                 .collect(Collectors.toSet());
 
-        asciiToAlternativeMap.putAll(currentNode.getAsciiName().toLowerCase(), new ArrayList<>(uniqueAlternateNames));
+        // add all unique alternative names to the [node - alternative names] multimap with currentNode as key
+        nodeToAlternativeMap.putAll(currentNode, new ArrayList<>(uniqueAlternateNames));
 
-        //add to map
+        //add to the [name - node] multimap with current ascii name of the node as key
         nameToNodeMap.put(currentNode.getAsciiName().toLowerCase(), currentNode);
-        for (String alternateName : asciiToAlternativeMap.get(currentNode.getAsciiName().toLowerCase())) {
-            nameToNodeMap.put(alternateName, currentNode);
+        for (String lowercaseAlternateName : nodeToAlternativeMap.get(currentNode)) {
+            nameToNodeMap.put(lowercaseAlternateName, currentNode);
         }
 
+        // go deeper in the tree
         for (GeoName childData : nodeData.getChildren()) {
             if (childData == null) {
                 continue;
             }
-
-            GeoNode childNode = new GeoNode(childData.getAsciiName(), currentNode.getDepth() + 1, currentNode);
+            GeoNode childNode = new GeoNode(childData.getAsciiName(), childData.getGeoNameId(), currentNode.getDepth() + 1, currentNode);
             currentNode.addChild(childNode);
             dfsTraversal(childNode, childData);
         }
@@ -93,15 +95,19 @@ public class GeoInitializer implements CommandLineRunner {
 
     private void levelReducingTraversal(GeoNode currentNode, GeoNode parentNode) {
         List<GeoNode> children = new ArrayList<>(currentNode.getChildren());
-        if (currentNode.getDepth() < 3) {
-            for (GeoNode child : children) {
-                levelReducingTraversal(child, currentNode);
-            }
-            return;
+
+        // erase children if the node is on the third level
+        if (currentNode.getDepth() == 3) {
+            currentNode.setChildren(new ArrayList<>());
         }
 
-        currentNode.setChildren(new ArrayList<>());
         for (GeoNode child : children) {
+            if (currentNode.getDepth() < 3) {
+                // go deeper if node is not on third level
+                levelReducingTraversal(child, currentNode);
+                continue;
+            }
+            // if node is on third level, reassign the parent and the depth of the child and go deeper
             child.setDepth(3);
             child.setParent(parentNode);
             parentNode.addChild(child);
