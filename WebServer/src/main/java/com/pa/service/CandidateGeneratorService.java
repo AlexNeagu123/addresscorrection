@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class CandidateGeneratorService {
     private final GeoGraphService geoGraphService;
     private final Multimap<String, GeoNode> nameToNodeMap;
 
-    public List<Branch> generateCandidateAddresses(List<FieldToken> fieldTokens) {
+    public List<Branch> generateCandidateAddresses(Set<FieldToken> fieldTokens) {
         return fieldTokens.stream()
                 .map(FieldToken::getToken)
                 .distinct()

@@ -66,6 +66,9 @@ public class GeoInitializer implements CommandLineRunner {
                 .filter(x -> !x.equals("") && !x.equals(currentNode.getAsciiName().toLowerCase()))
                 .collect(Collectors.toSet());
 
+        if(nodeData.getAsciiName().equals("Township of Sugar Grove")) {
+            log.error("Aici init: " + uniqueAlternateNames + " " + currentNode);
+        }
         // add all unique alternative names to the [node - alternative names] multimap with currentNode as key
         nodeToAlternativeMap.putAll(currentNode, new ArrayList<>(uniqueAlternateNames));
 

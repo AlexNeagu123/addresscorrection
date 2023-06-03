@@ -23,8 +23,8 @@ public class AddressCorrectionService {
 
     public Address correctAddress(Address address) {
         List<FieldToken> fieldTokens = AddressNormalizer.normalizeAddress(address);
-        List<Branch> candidateBranches = candidateGenerator.generateCandidateAddresses(fieldTokens);
         HashSet<FieldToken> compoundTokensSet = new HashSet<>(AddressNormalizer.getCompoundTokens(fieldTokens));
+        List<Branch> candidateBranches = candidateGenerator.generateCandidateAddresses(compoundTokensSet);
         System.out.println("All field tokens: " + compoundTokensSet);
         CandidateScorer candidateScorer = new CandidateScorer(compoundTokensSet, candidateBranches, nodeToAlternativeMap);
         return branchMapper.mapToAddress(candidateScorer.getBestCandidate());

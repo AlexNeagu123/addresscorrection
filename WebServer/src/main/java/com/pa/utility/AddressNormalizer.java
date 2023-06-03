@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class AddressNormalizer {
     private static final List<Pair<Integer, Integer>> badCharactersRange = Arrays.asList(Pair.of(0, 64), Pair.of(91, 95), Pair.of(123, 190));
-    private static final int WORD_LIMIT = 3;
+    private static final int WORD_LIMIT = 5;
 
     public static List<FieldToken> getCompoundTokens(List<FieldToken> fieldTokens) {
         List<FieldToken> compoundTokens = new ArrayList<>();
@@ -36,7 +36,7 @@ public class AddressNormalizer {
         transformNullToEmptyString(address);
         makeAddressLowercase(address);
 
-        List<FieldToken> allFieldTokens = transformAddressToString(address);
+        List<FieldToken> allFieldTokens = transformAddressToFieldTokens(address);
         for (FieldToken fieldToken : allFieldTokens) {
             String strToken = fieldToken.getToken();
             fieldToken.setToken(removeBadCharacters(strToken));
@@ -58,7 +58,7 @@ public class AddressNormalizer {
         }
     }
 
-    private static List<FieldToken> transformAddressToString(Address address) {
+    private static List<FieldToken> transformAddressToFieldTokens(Address address) {
         List<FieldToken> allFieldTokens = new ArrayList<>();
         allFieldTokens.addAll(getFieldTokens(address.getCountry(), 0));
         allFieldTokens.addAll(getFieldTokens(address.getState(), 1));

@@ -11,6 +11,7 @@ import java.util.List;
 public class GeoNode {
     private final String asciiName;
     private final Long geonameId;
+    @EqualsAndHashCode.Exclude
     private int depth;
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
