@@ -68,6 +68,9 @@ public class AddressNormalizer {
 
     private static List<FieldToken> getFieldTokens(String field, Integer fieldId) {
         List<FieldToken> fieldTokens = new ArrayList<>();
+        if(Objects.equals(field, "")) {
+            return fieldTokens;
+        }
         List<String> strTokens = Arrays.stream(field.split("\s+")).distinct().toList();
         for (String strToken : strTokens) {
             fieldTokens.add(new FieldToken(strToken, fieldId));
