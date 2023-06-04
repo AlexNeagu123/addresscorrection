@@ -1,7 +1,5 @@
 package com.pa.configuration;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Multimap;
 import com.pa.entity.GeoGraph;
 import com.pa.entity.GeoName;
@@ -9,9 +7,12 @@ import com.pa.entity.GeoNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,18 +26,28 @@ public class GeoInitializer implements CommandLineRunner {
     private final GeoGraph geoGraph;
     private final Multimap<String, GeoNode> nameToNodeMap;
     private final Multimap<GeoNode, String> nodeToAlternativeMap;
+    private static final String URI = "https://addresscorrection.blob.core.windows.net/geonames/geoNames.json";
 
     @Override
     public void run(String... args) {
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            List<GeoName> graphData = objectMapper.readValue(new File("src/main/resources/static/geoNames.json"), new TypeReference<List<GeoName>>() {
-            });
+            List<GeoName> graphData = getGeoDataFromAzure();
             buildGraphFromData(graphData);
         } catch (IOException ex) {
-            log.error("Couldn't deserialize the resource JSON file: " + ex.getMessage());
-            System.exit(13);
+            log.error(ex.getMessage());
         }
+    }
+
+    public List<GeoName> getGeoDataFromAzure() throws IOException {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<List<GeoName>> response = restTemplate.exchange(
+                URI, HttpMethod.GET, null, new ParameterizedTypeReference<List<GeoName>>() {
+                }
+        );
+        if (response.getStatusCode().isError()) {
+            throw new IOException("Couldn't read the file from Azure");
+        }
+        return response.getBody();
     }
 
     private void buildGraphFromData(List<GeoName> graphData) {
@@ -65,7 +76,7 @@ public class GeoInitializer implements CommandLineRunner {
                 .map(String::toLowerCase)
                 .filter(x -> !x.equals("") && !x.equals(currentNode.getAsciiName().toLowerCase()))
                 .collect(Collectors.toSet());
-        
+
         // add all unique alternative names to the [node - alternative names] multimap with currentNode as key
         nodeToAlternativeMap.putAll(currentNode, new ArrayList<>(uniqueAlternateNames));
 
