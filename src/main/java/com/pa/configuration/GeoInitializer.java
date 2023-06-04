@@ -55,9 +55,6 @@ public class GeoInitializer implements CommandLineRunner {
             if (rootData == null) {
                 continue;
             }
-            if(!rootData.getAsciiName().equals("Romania")) {
-                continue;
-            }
             GeoGraph tree = generateTree(rootData);
             reduceTreeLevels(tree);
             insertTreeIntoGraph(tree);
