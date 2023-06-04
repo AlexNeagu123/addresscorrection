@@ -30,7 +30,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: addresscorrectionreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8b99bdafc9e9485180da350800f3e5f7 }}/addresscorrection:${{ github.sha }}
+        tags: addresscorrectionreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8b99bdafc9e9485180da350800f3e5f7 }}/addresscorrection:${{ github.sha | lowercase }}
         file: ./Dockerfile
 
   deploy:
