@@ -3,6 +3,8 @@ FROM maven:latest as build
 # Setting up work directory
 WORKDIR /build
 
+EXPOSE 8082
+
 # Copy the pom file into our build
 COPY ./pom.xml .
 
