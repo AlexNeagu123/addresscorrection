@@ -19,6 +19,12 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
+    - name: set lower case username
+      run: |
+        echo "CONTAINER_USER_LC=${OWNER,,}" >> ${GITHUB_ENV}
+      env:
+        OWNER: '${{ secrets.AzureAppService_ContainerUsername_8b99bdafc9e9485180da350800f3e5f7 }}'
+
     - name: Log in to registry
       uses: docker/login-action@v2
       with:
@@ -30,7 +36,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: "addresscorrectionreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8b99bdafc9e9485180da350800f3e5f7 }}/addresscorrection:${{ github.sha }}"
+        tags: addresscorrectionreg.azurecr.io/${{ CONTAINER_USER_LC }}/addresscorrection:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -48,4 +54,4 @@ jobs:
         app-name: 'AddressCorrection'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_598d8a19d5354535adc52605001d8d63 }}
-        images: 'addresscorrectionreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8b99bdafc9e9485180da350800f3e5f7 }}/addresscorrection:${{ github.sha }}'
+        images: 'addresscorrectionreg.azurecr.io/${{ CONTAINER_USER_LC }}/addresscorrection:${{ github.sha }}'
