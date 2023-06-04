@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://addresscorrectionreg.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_8b99bdafc9e9485180da350800f3e5f7 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_3182a52ad2234ecf8517d544af8aee60 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_2481114650d84493877e605c18695d78 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_2944417526df4a498e8433dd8d0ce1be }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: "addresscorrectionreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8b99bdafc9e9485180da350800f3e5f7 }}/addresscorrection:${{ github.sha }}"
+        tags: addresscorrectionreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_2481114650d84493877e605c18695d78 }}/addresscorrection:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'AddressCorrection'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_598d8a19d5354535adc52605001d8d63 }}
-        images: 'addresscorrectionreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_8b99bdafc9e9485180da350800f3e5f7 }}/addresscorrection:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_18fac10c53c54467aa7eb7b227f70b96 }}
+        images: 'addresscorrectionreg.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_2481114650d84493877e605c18695d78 }}/addresscorrection:${{ github.sha }}'
