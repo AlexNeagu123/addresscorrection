@@ -1,5 +1,7 @@
 package com.pa.configuration;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Multimap;
 import com.pa.entity.GeoGraph;
 import com.pa.entity.GeoName;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,28 +29,18 @@ public class GeoInitializer implements CommandLineRunner {
     private final GeoGraph geoGraph;
     private final Multimap<String, GeoNode> nameToNodeMap;
     private final Multimap<GeoNode, String> nodeToAlternativeMap;
-    private static final String URI = "https://addresscorrection.blob.core.windows.net/geonames/geoNames.json";
 
     @Override
     public void run(String... args) {
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            List<GeoName> graphData = getGeoDataFromAzure();
+            List<GeoName> graphData = objectMapper.readValue(new File("src/main/resources/static/geoNames.json"), new TypeReference<List<GeoName>>() {
+            });
             buildGraphFromData(graphData);
         } catch (IOException ex) {
-            log.error(ex.getMessage());
+            log.error("Couldn't deserialize the resource JSON file: " + ex.getMessage());
+            System.exit(13);
         }
-    }
-
-    public List<GeoName> getGeoDataFromAzure() throws IOException {
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<List<GeoName>> response = restTemplate.exchange(
-                URI, HttpMethod.GET, null, new ParameterizedTypeReference<List<GeoName>>() {
-                }
-        );
-        if (response.getStatusCode().isError()) {
-            throw new IOException("Couldn't read the file from Azure");
-        }
-        return response.getBody();
     }
 
     private void buildGraphFromData(List<GeoName> graphData) {
