@@ -322,7 +322,7 @@ class AddressCorrectionServiceTest {
     }
 
     @Test
-    void givenRussiatSanktPeterburgSerovoAddressAllWithAlternateNames_whenSwappingAllFields_thenCorrectTheAddress() {
+    void givenRussiaSanktPeterburgSerovoAddressAllWithAlternateNames_whenSwappingAllFields_thenCorrectTheAddress() {
         Address correctAddress = new Address("Russian Federation", "Sankt-Peterburg", "Serovo");
         Address wrongAddress = new Address("Серово", "Питер", "Российская Федерация");
         Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
@@ -371,10 +371,9 @@ class AddressCorrectionServiceTest {
     }
 
     @Test
-        // 11
-    void givenCanadaOntarioTorontoAddressAllWithAlternateNames_whenSwappingStateAndCity_thenCorrectTheAddress() {
-        Address correctAddress = new Address("Canada", "Ontario", "Ottawa");
-        Address wrongAddress = new Address("Ca-na-da", "Ottaba", "Canada West");
+    void givenCanadaPrinceEdwardIslandAlbertonAddressAllWithAlternateNames_whenSwappingStateAndCity_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Canada", "Prince Edward Island", "Alberton");
+        Address wrongAddress = new Address("Kanadas", "Албертон", "Eilean Eoin");
         Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
     }
 
@@ -409,12 +408,74 @@ class AddressCorrectionServiceTest {
     // ======================================================================================================================
     // 10 tests with one field deletion (without cross-fields or alternate names)
     @Test
-    void givenUSAMiamiAddressWithDeletedStateField_thenCorrectTheAddress() {
+    void givenUSAMiamiAddress_whenDeletingCountryField_thenCorrectTheAddress() {
         Address correctAddress = new Address("United States", "Florida", "Miami");
         Address wrongAddress = new Address(null, correctAddress.getState(), correctAddress.getCity());
         Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
     }
 
+    @Test
+    void givenMoldovaNisporeniGrozestiAddress_whenDeletingStateField_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Republic of Moldova", "Nisporeni", "Grozesti");
+        Address wrongAddress = new Address(correctAddress.getCountry(), null, correctAddress.getCity());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenFranceAzurNiceAddress_whenDeletingCountryField_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Republic of France", "Provence-Alpes-Cote d'Azur", "Nice");
+        Address wrongAddress = new Address(null, correctAddress.getState(), correctAddress.getCity());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenMoldovaMunicipiulChisinauSectorulCiocanaAddress_whenDeletingStateField_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Republic of Moldova", "Municipiul Chisinau", "Ciocana");
+        Address wrongAddress = new Address(correctAddress.getCountry(), null, correctAddress.getCity());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenRussiaSanktPeterburgSerovoAddress_whenDeletingCountryField_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Russian Federation", "Sankt-Peterburg", "Serovo");
+        Address wrongAddress = new Address(null, correctAddress.getState(), correctAddress.getCity());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenChinaBeijingBeijingAddress_whenDeletingStateField_thenCorrectTheAddress() {
+        Address correctAddress = new Address("People's Republic of China", "Beijing Shi", "Beijing");
+        Address wrongAddress = new Address(correctAddress.getCountry(), null, correctAddress.getCity());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenJapanTokyoTokyoAddress_whenDeletingCountryField_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Japan", "Tokyo Prefecture", "Tokyo");
+        Address wrongAddress = new Address(null, correctAddress.getState(), correctAddress.getCity());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenMongoliaUlaanbaatarUlaanbaatarAddress_whenDeletingStateField_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Mongolia", "Ulaanbaatar Hot", "Ulan Bator");
+        Address wrongAddress = new Address(correctAddress.getCountry(), null, correctAddress.getCity());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenBrazilBrasiliaBrasiliaAddress_whenDeletingCountryField_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Federative Republic of Brazil", "Federal District", "Brasilia");
+        Address wrongAddress = new Address(null, correctAddress.getState(), correctAddress.getCity());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenFinlandKarjalaJoensuuAddress_whenDeletingCountryField_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Republic of Finland", "Pohjois-Karjala", "Vaeyrynvaara");
+        Address wrongAddress = new Address(null, correctAddress.getState(), correctAddress.getCity());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
 
     // ======================================================================================================================
     // 15 tests with one field deletion (mainly country) + cross-field
@@ -425,21 +486,261 @@ class AddressCorrectionServiceTest {
         Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
     }
 
+    @Test
+    void givenUSAMiamiAddress_whenDeletingCountryFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("United States", "Florida", "Miami");
+        Address wrongAddress = new Address(correctAddress.getCity(), null, correctAddress.getState());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenMoldovaNisporeniGrozestiAddress_whenDeletingStateFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Republic of Moldova", "Nisporeni", "Grozesti");
+        Address wrongAddress = new Address(correctAddress.getCity(), null, correctAddress.getState());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenFranceAzurNiceAddress_whenDeletingCountryFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Republic of France", "Provence-Alpes-Cote d'Azur", "Nice");
+        Address wrongAddress = new Address(correctAddress.getCity(), null, correctAddress.getState());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenMoldovaMunicipiulChisinauSectorulCiocanaAddress_whenDeletingStateFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Republic of Moldova", "Municipiul Chisinau", "Ciocana");
+        Address wrongAddress = new Address(correctAddress.getCity(), correctAddress.getState(), null);
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenRussiaSanktPeterburgSerovoAddress_whenDeletingCountryFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Russian Federation", "Sankt-Peterburg", "Serovo");
+        Address wrongAddress = new Address(null, correctAddress.getCity(), correctAddress.getState());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenChinaBeijingBeijingAddress_whenDeletingStateFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("People's Republic of China", "Beijing Shi", "Beijing");
+        Address wrongAddress = new Address(correctAddress.getCity(), null, correctAddress.getCountry());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenJapanTokyoTokyoAddress_whenDeletingCountryFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Japan", "Tokyo Prefecture", "Tokyo");
+        Address wrongAddress = new Address(null, correctAddress.getCity(), correctAddress.getState());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenMongoliaUlaanbaatarUlaanbaatarAddress_whenDeletingStateFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Mongolia", "Ulaanbaatar Hot", "Ulan Bator");
+        Address wrongAddress = new Address(correctAddress.getCity(), correctAddress.getCountry(), null);
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenBrazilBrasiliaBrasiliaAddress_whenDeletingCountryFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Federative Republic of Brazil", "Federal District", "Brasilia");
+        Address wrongAddress = new Address(null, correctAddress.getState(), correctAddress.getCity());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenFinlandKarjalaJoensuuAddress_whenDeletingCountryFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Republic of Finland", "Pohjois-Karjala", "Vaeyrynvaara");
+        Address wrongAddress = new Address(null, correctAddress.getCity(), correctAddress.getState());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenMoldovaCantemirEnichioiAddress_whenDeletingStateFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Republic of Moldova", "Cantemir", "Enichioi");
+        Address wrongAddress = new Address(correctAddress.getCity(), null, correctAddress.getCountry());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenRomaniaBistritaNasaudCiceuGiurgesti_whenDeletingStateFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Romania", "Bistrita-Nasaud", "Ciceu-Giurgesti");
+        Address wrongAddress = new Address(correctAddress.getCity(), null, correctAddress.getCountry());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenSwedenVaestmanlandGoetlundaAddress_whenDeletingCountryFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Kingdom of Sweden", "Vaestmanland County", "Goetlunda socken");
+        Address wrongAddress = new Address(correctAddress.getState(), null, correctAddress.getCity());
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenNorwayTrondelagSkaun_whenDeletingCountryFieldAndSwappingAllFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Kingdom of Norway", "Trondelag", "Skaun");
+        Address wrongAddress = new Address(correctAddress.getState(), correctAddress.getCity(), null);
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
     // ======================================================================================================================
     // 10 tests with one field deletion (mainly country) + alternate names + cross-fields on all fields
     @Test
-    void givenBrazilFederalDistrictBrasiliaWithAlternateNames_whenDeletedCountryFieldAndSwappingRemainingFields_thenCorrectTheAddress() {
+    void givenBrazilFederalDistrictBrasiliaAddressWithAlternateNames_whenDeletedCountryFieldAndSwappingRemainingFields_thenCorrectTheAddress() {
         Address correctAddress = new Address("Federative Republic of Brazil", "Federal District", "Brasilia");
         Address wrongAddress = new Address("Distrig Kevreadel", null, "Бразилия");
         Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
     }
 
+    @Test
+    void givenRussiatSanktPeterburgSerovoAddressAllWithAlternateNames_whenDeletedStateFieldAndSwappingRemainingFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Russian Federation", "Sankt-Peterburg", "Serovo");
+        Address wrongAddress = new Address("Серово", null, "Российская Федерация");
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenChinaBeijingBeijingAddressWithAlternateNames_whenDeletedCountryFieldAndSwappingRemainingFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("People's Republic of China", "Beijing Shi", "Beijing");
+        Address wrongAddress = new Address("北京市", "北京市", null);
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenJapanTokyoTokyoAddressWithAlternateNames_whenDeletedCountryFieldAndSwappingRemainingFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Japan", "Tokyo Prefecture", "Tokyo");
+        Address wrongAddress = new Address("とうきょうと", "டோக்கியோ", null);
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenRomaniaClujClujNapocaAddressWithAlternateNames_whenDeletedStateFieldAndSwappingRemainingFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Romania", "Cluj", "Cluj-Napoca");
+        Address wrongAddress = new Address("an Rómáin", "Klausenburg", null);
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+
+    // Republic of Finland      South Ostrobothnia      Jaerviseutu
+    // Finljand     awstrwbwtnyay jnwby     Järviseudun seutukunta
+    @Test
+    void givenFinlandOstrobothniaJaerviseutuAddressWithAlternateNames_whenDeletedStateFieldAndSwappingRemainingFields_thenCorrectTheAddress(){
+        Address correctAddress = new Address("Republic of Finland", "South Ostrobothnia", "Jaerviseutu");
+        Address wrongAddress = new Address(null, "Finljand", "Järviseudun seutukunta");
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+
+    // Republic of India   Union Territory of Andaman and Nicobar Islands   Poahat
+    // Hindiston   Andaman and Nicobar  Pōahat
+
+    @Test
+    void givenIndiaPortBlairPoahatAddressWithAlternateNames_whenDeletedCountryFieldAndSwappingRemainingFields_thenCorrectTheAddress(){
+        Address correctAddress = new Address("Republic of India", "Union Territory of Andaman and Nicobar Islands", "Poahat");
+        Address wrongAddress = new Address( "Andaman and Nicobar", null, "Pōahat");
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+
+    // Republic of France    Occitanie      Lot
+    // An Fhraing   Languedoc-Roussillon-Midi-Pyrenees    Departement du Lot
+
+    @Test
+    void givenFranceOccitanieLotAddressWithAlternateNames_whenDeletedCountryFieldAndSwappingRemainingFields_thenCorrectTheAddress(){
+        Address correctAddress = new Address("Republic of France", "Occitanie", "Lot");
+        Address wrongAddress = new Address("Languedoc-Roussillon-Midi-Pyrenees", null, "Departement du Lot");
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+
+    // Republic of Bulgaria  Burgas     Marinka
+    // Balgaryja   Burgaska Oblast      Маринка
+
+    @Test
+    void givenBulgariaBurgasMarinkaAddressWithAlternateNames_whenDeletedStateFieldAndSwappingRemainingFields_thenCorrectTheAddress(){
+        Address correctAddress = new Address("Republic of Bulgaria", "Burgas", "Marinka");
+        Address wrongAddress = new Address("Balgaryja", "Маринка", null);
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenEgyptSuhajDarAsSalamAddressWithAlternateNames_whenDeletedCountryFieldAndSwappingRemainingFields_thenCorrectTheAddress(){
+        Address correctAddress = new Address("Arab Republic of Egypt", "Muhafazat Suhaj", "Markaz Dar as Salam");
+        Address wrongAddress = new Address("mhafzt swhaj", null, "مركز دار السلام");
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
     // ======================================================================================================================
     // 10 tests with moving one field + alternate names + cross-fields on all fields (compound fields may exist)
+
     @Test
-    void givenGermanyWithAlternateBerlinWithAlternateBerlinAddress_whenMovingCountryFieldToStateAndSwappingRemainingFields_thenCorrectTheAddress() {
+    void givenGermanyBerlinBerlinAddressAllWithAlternateNames_whenMovingCountryFieldToStateAndSwappingRemainingFields_thenCorrectTheAddress() {
         Address correctAddress = new Address("Federal Republic of Germany", "Land Berlin", "Berlin");
         Address wrongAddress = new Address("Berlim Deutschland", correctAddress.getCity(), null);
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenSwitzerlandBernBernAddressAllWithAlternateNames_whenMovingCountryFieldToStateAndSwappingRemainingFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Switzerland", "Canton de Berne", "Bern");
+        Address wrongAddress = new Address("BE Schweiz", "Bundesstadt", null);
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenPortugalMadeiraSantanaAddressAllWithAlternateNames_whenMovingStateFieldToCountryAndSwappingRemainingFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Portuguese Republic", "Madeira", "Santana");
+        Address wrongAddress = new Address(null, "Portugal Autonomous Region of Madeira", "Santana Municipality");
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenRussiaSanktPeterburgSerovoAddressAllWithAlternateNames_whenMovingStateFieldToCountryAndSwappingRemainingFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Russian Federation", "Sankt-Peterburg", "Serovo");
+        Address wrongAddress = new Address("Российская Федерация Питер", null, "Серово");
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenBulgariaBurgasMarinkaAddressAllWithAlternateNames_whenMovingStateFieldToCountryAndSwappingRemainingFields_thenCorrectTheAddress(){
+        Address correctAddress = new Address("Republic of Bulgaria", "Burgas", "Marinka");
+        Address wrongAddress = new Address("Balgaryja Маринка", null, "Burgaska Oblast");
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenFranceOccitanieLotAddressAllWithAlternateNames_whenMovingCountryFieldToStateAndSwappingRemainingFields_thenCorrectTheAddress(){
+        Address correctAddress = new Address("Republic of France", "Occitanie", "Lot");
+        Address wrongAddress = new Address("An Fhraing Languedoc-Roussillon-Midi-Pyrenees", null, "Departement du Lot");
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenFinlandOstrobothniaJaerviseutuAddressAllWithAlternateNames_whenMovingCountryFieldToStateAndSwappingRemainingFields_thenCorrectTheAddress(){
+        Address correctAddress = new Address("Republic of Finland", "South Ostrobothnia", "Jaerviseutu");
+        Address wrongAddress = new Address(null, "Finljand awstrwbwtnyay jnwby", "Järviseudun seutukunta");
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenSloveniaScavniciJurijAddressAllWithAlternateNames_whenMovingCountryFieldToStateAndSwappingRemainingFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Republic of Slovenia", "Obcina Sveti Jurij ob Scavnici", "Sveti Jurij");
+        Address wrongAddress = new Address("Obcina Sveti Jurij Socijalisticka Republika Slovenija", null, "Vizlendva");
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenArgentinaCordobaCordobaAddressAllWithAlternateNames_whenMovingStateFieldToCountryAndSwappingRemainingFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Argentine Republic", "Cordoba Province", "Departamento de Marcos Juarez");
+        Address wrongAddress = new Address("A Arxentina CD", "Marcos Juárez", null);
+        Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
+    }
+
+    @Test
+    void givenCanadaPrinceEdwardIslandAlbertonAddressAllWithAlternateNames_whenMovingStateFieldToCountryAndSwappingRemainingFields_thenCorrectTheAddress() {
+        Address correctAddress = new Address("Canada", "Prince Edward Island", "Alberton");
+        Address wrongAddress = new Address("Kanadas Eilean Eoin", "Албертон", null);
         Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
     }
 }
