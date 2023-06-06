@@ -26,7 +26,7 @@ public class GeoInitializer implements CommandLineRunner {
     private final GeoGraph geoGraph;
     private final Multimap<String, GeoNode> nameToNodeMap;
     private final Multimap<GeoNode, String> nodeToAlternativeMap;
-    private static final String URI = "https://addresscorrection.blob.core.windows.net/geonames/geoNames.json";
+    private static final String URI = "https://addresscorrection.blob.core.windows.net/geonames/deployment_geoNames.json";
 
     @Override
     public void run(String... args) {
@@ -53,9 +53,6 @@ public class GeoInitializer implements CommandLineRunner {
     private void buildGraphFromData(List<GeoName> graphData) {
         for (GeoName rootData : graphData) {
             if (rootData == null) {
-                continue;
-            }
-            if(!rootData.getAsciiName().equals("Romania")) {
                 continue;
             }
             GeoGraph tree = generateTree(rootData);

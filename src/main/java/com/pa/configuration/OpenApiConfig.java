@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(title = "AddressCorrection", version = "0.0.1-SNAPSHOT"),
-        servers = {@Server(url = "https://addresscorrection.azurewebsites.net")},
+        servers = {@Server(url = "https://addresscorrection.azurewebsites.net"), @Server(url = "http://localhost:8082")},
         tags = {
                 @Tag(
                         name = "AddressCorrection",
