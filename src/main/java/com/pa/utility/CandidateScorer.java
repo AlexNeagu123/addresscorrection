@@ -10,6 +10,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * The <tt>CandidateScorer</tt> class contains useful methods for computing the score of given a list of
+ * candidate {@link Branch} objects and the list of all the compound {@link FieldToken} formed from the
+ * input {@link com.pa.entity.Address} received by the API
+ *
+ * @author Alex Neagu
+ * @author Cristian Fiodorov
+ */
 @Log4j2
 public class CandidateScorer {
     private final Set<FieldToken> fieldTokens;
@@ -24,6 +32,9 @@ public class CandidateScorer {
         this.bestCandidate = null;
     }
 
+    /**
+     * @return The best candidate found after assigning scores to each {@link Branch}
+     */
     public Branch getBestCandidate() {
         if (bestCandidate == null) {
             computeBestCandidate();
@@ -45,6 +56,15 @@ public class CandidateScorer {
         }
     }
 
+    /**
+     * Given a candidate solution represented by a {@link Branch} object, computes the total score of this particular candidate
+     * <p>
+     * All the ascii names from the branch are analyzed, one by one, and compared to the tokens found in the compound list of {@link FieldToken}
+     * objects computed after the normalization process
+     *
+     * @param candidateBranch A candidate solution {@link Branch}
+     * @return The score assigned to this branch
+     */
     private double computeScore(Branch candidateBranch) {
         return getScoreFromNode(candidateBranch.getCityNode(), 2, ScoringConstants.CITY_EXACT_MATCH, ScoringConstants.CITY_ALTERNATE_MATCH)
                 + getScoreFromNode(candidateBranch.getStateNode(), 1, ScoringConstants.STATE_EXACT_MATCH, ScoringConstants.STATE_ALTERNATE_MATCH)

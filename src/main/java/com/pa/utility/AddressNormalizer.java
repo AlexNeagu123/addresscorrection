@@ -9,6 +9,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The <tt>AddressNormalizer</tt> class contains useful methods that based on an {@link Address} object received by the API,
+ * deletes all the invalid characters and extra spaces and makes all the text to be lowercase
+ * <p>
+ * All the found tokens are returned as a list of {@link FieldToken} objects
+ *
+ * @author Alex Neagu
+ * @author Cristian Fiodorov
+ */
 public class AddressNormalizer {
     private static final List<Pair<Integer, Integer>> badCharactersRange = Arrays.asList(Pair.of(0, 64), Pair.of(91, 95), Pair.of(123, 190));
     private static final int WORD_LIMIT = 5;
@@ -68,7 +77,7 @@ public class AddressNormalizer {
 
     private static List<FieldToken> getFieldTokens(String field, Integer fieldId) {
         List<FieldToken> fieldTokens = new ArrayList<>();
-        if(Objects.equals(field, "")) {
+        if (Objects.equals(field, "")) {
             return fieldTokens;
         }
         List<String> strTokens = Arrays.stream(field.split("\s+")).distinct().toList();

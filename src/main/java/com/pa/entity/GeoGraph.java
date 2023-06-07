@@ -7,6 +7,12 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The <tt>GeoGraph</tt> stores are the roots (viewed as {@link GeoNode} objects) in the countries forest.
+ *
+ * @author Alex Neagu
+ * @author Cristian Fiodorov
+ */
 @Data
 @AllArgsConstructor
 @Builder
