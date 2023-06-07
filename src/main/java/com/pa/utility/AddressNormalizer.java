@@ -108,8 +108,8 @@ public class AddressNormalizer {
     private static String removeBadCharacters(String addressStr) {
         for (var badCharacterRange : badCharactersRange) {
             for (int badCharacterCode = badCharacterRange.getLeft(); badCharacterCode <= badCharacterRange.getRight(); ++badCharacterCode) {
-                if (badCharacterCode == 32) {
-                    // if space was met
+                if (badCharacterCode == 32 || badCharacterCode == 45) {
+                    // if space or '-' was met
                     continue;
                 }
                 char badCharacter = (char) badCharacterCode;
