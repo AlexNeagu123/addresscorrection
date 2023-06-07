@@ -91,7 +91,6 @@ public class GeoInitializer implements CommandLineRunner {
 
     private void reduceTreeLevels() {
         for (GeoNode root : geoGraph.getRoots()) {
-            // only one iteration expected
             levelReducingTraversal(root, root);
         }
     }

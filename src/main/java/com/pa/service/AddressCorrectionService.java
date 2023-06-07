@@ -19,7 +19,6 @@ import java.util.List;
 public class AddressCorrectionService {
     private final CandidateGeneratorService candidateGenerator;
     private final Multimap<GeoNode, String> nodeToAlternativeMap;
-    private final BranchMapper branchMapper;
 
     public Address correctAddress(Address address) {
         List<FieldToken> fieldTokens = AddressNormalizer.normalizeAddress(address);
@@ -27,6 +26,6 @@ public class AddressCorrectionService {
         List<Branch> candidateBranches = candidateGenerator.generateCandidateAddresses(compoundTokensSet);
         System.out.println("All field tokens: " + compoundTokensSet);
         CandidateScorer candidateScorer = new CandidateScorer(compoundTokensSet, candidateBranches, nodeToAlternativeMap);
-        return branchMapper.mapToAddress(candidateScorer.getBestCandidate());
+        return BranchMapper.mapToAddress(candidateScorer.getBestCandidate());
     }
 }
