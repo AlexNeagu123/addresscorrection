@@ -55,19 +55,18 @@ public class GeoInitializer implements CommandLineRunner {
             if (rootData == null) {
                 continue;
             }
-            GeoGraph tree = generateTree(rootData);
-            reduceTreeLevels(tree);
-            insertTreeIntoGraph(tree);
+            GeoNode root = generateRoot(rootData);
+            this.geoGraph.addRoot(root);
         }
+        reduceTreeLevels();
+
         log.info("Graph successfully initialized!");
     }
 
-    private GeoGraph generateTree(GeoName rootData) {
-        GeoGraph tree = new GeoGraph();
+    private GeoNode generateRoot(GeoName rootData) {
         GeoNode root = new GeoNode(rootData.getAsciiName(), rootData.getGeoNameId(), 1, null);
-        tree.addRoot(root);
         dfsTraversal(root, rootData);
-        return tree;
+        return root;
     }
 
     private void dfsTraversal(GeoNode currentNode, GeoName nodeData) {
@@ -97,9 +96,8 @@ public class GeoInitializer implements CommandLineRunner {
         }
     }
 
-    private void reduceTreeLevels(GeoGraph tree) {
-        for (GeoNode root : tree.getRoots()) {
-            // only one iteration expected
+    private void reduceTreeLevels() {
+        for (GeoNode root : geoGraph.getRoots()) {
             levelReducingTraversal(root, root);
         }
     }
@@ -123,12 +121,6 @@ public class GeoInitializer implements CommandLineRunner {
             child.setParent(parentNode);
             parentNode.addChild(child);
             levelReducingTraversal(child, parentNode);
-        }
-    }
-
-    private void insertTreeIntoGraph(GeoGraph tree) {
-        for (GeoNode root : tree.getRoots()) {
-            this.geoGraph.addRoot(root);
         }
     }
 }

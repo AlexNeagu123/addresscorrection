@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class BranchMapper {
-    public Address mapToAddress(Branch branch) {
+    public static Address mapToAddress(Branch branch) {
         return Address.builder()
                 .country(branch.getCountryNode().getAsciiName())
                 .state(branch.getStateNode().getAsciiName())
