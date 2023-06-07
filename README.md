@@ -20,15 +20,22 @@ This repository contains the code for
 :heavy_check_mark: Made tests for **latency** using **Apache JMeter**
 
 :heavy_check_mark: Stored all the _countries_, _cities_ and _states_ as nodes in a graph and the relationships between them as edges.
+   - _:file_folder: src/main/java/com/pa/configuration/GeoInitializer.java_
 
 :heavy_check_mark: The resulted graph is a **forest** that we store in memory.
+   - _:file_folder: src/main/java/com/pa/configuration/GeoInitializer.java_
 
 :heavy_check_mark: Used **Google Guava**'s Multimap in order to map the ascii names to nodes in the forest (this step speeds up the searching process a lot). 
 
 :heavy_check_mark: Implemented a service that extracts all the solution candidates based on the normalized tokens.
+   - _:file_folder: src/main/java/com/pa/service/CandidateGeneratorService.java_
 
-:heavy_check_mark: Implemented an algorithm that assigns a score to each solution candidate .
+:heavy_check_mark: Implemented an algorithm that assigns a score to each solution candidate.
+   - _:file_folder: src/main/java/com/pa/utility/CandidateScorer.java_
 
 :heavy_check_mark: Successfully deployed the application in cloud using **Microsoft Azure** [the code executed in deployment is on deployment branch].
+   - _:file_folder: Dockerfile [on deployment branch]_
 
 :heavy_check_mark: Used **Github Actions** to add **Continuous Integration** on the deployment branch.
+   - _:file_folder: .github/workflows/deployment_addresscorrection.yml [on deployment branch]_
+
