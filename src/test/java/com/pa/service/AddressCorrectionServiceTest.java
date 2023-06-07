@@ -762,9 +762,9 @@ class AddressCorrectionServiceTest {
     }
 
     @Test
-    void givenUSAFloridaMiamiAddress_whenChangingStateFieldAndSwapping_thenCorrectTheAddress() {
-        Address correctAddress = new Address("United States", "Florida", "Miami");
-        Address wrongAddress = new Address(correctAddress.getCity(), "Cordoba Province", correctAddress.getCountry());
+    void givenUSALouisianaUnitedAddress_whenChangingStateFieldAndSwapping_thenCorrectTheAddress() {
+        Address correctAddress = new Address("United States", "Louisiana", "United");
+        Address wrongAddress = new Address(correctAddress.getCity(), "awstrwbwtnyay jnwby", correctAddress.getCountry());
         Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
     }
 
@@ -799,7 +799,7 @@ class AddressCorrectionServiceTest {
     @Test
     void givenItalyPortofinoPortofinoAddress_whenChangingStateFieldAndSwapping_thenCorrectTheAddress() {
         Address correctAddress = new Address("Italian Republic", "Liguria", "Portofino");
-        Address wrongAddress = new Address(correctAddress.getCountry(),"Ulaanbaatar Hot", correctAddress.getCity());
+        Address wrongAddress = new Address(correctAddress.getCountry(),"Grozesti", correctAddress.getCity());
         Assertions.assertEquals(correctAddress, addressCorrectionService.correctAddress(wrongAddress));
     }
 
