@@ -7,12 +7,15 @@ This repository contains the code for
 
 ## **Address Correction API** project ##
 
-:heavy_check_mark: Supports 10+ countries (70 on **main** branch and 25 on **deployment** branch).
+:heavy_check_mark: Supports 10+ countries (70 on **main** branch and 25 on **deployment** branch). 
 
 :heavy_check_mark: Supports addresses written in multiple languages.
 
 :heavy_check_mark: Implemented the input address **normalization**.
    - _:file_folder: src/main/java/com/pa/utility/AddressNormalizer.java_
+
+:heavy_check_mark: Made a script that parses important .tsv files (_allCountries_, _hierarchy_, _countryInfo_)  from **GeoNames** and serializes the data in a .json file
+  - _:card_index_dividers: https://github.com/AlexNeagu123/AddressCorrectionParser_
 
 :heavy_check_mark: Made 100 **Unit Tests** in order to test the correction accuracy (%) (a lot of cases treated including **crossfield** and **elimination**)
   - _:file_folder: src/test/java/com/pa/service/AddressCorrectionServiceTest.java_
