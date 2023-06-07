@@ -5,6 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * The <tt>Address</tt> class models the request body received by the API.
+ *
+ * @author Alex Neagu
+ * @author Cristian Fiodorov
+ */
 @Data
 @Builder
 @AllArgsConstructor

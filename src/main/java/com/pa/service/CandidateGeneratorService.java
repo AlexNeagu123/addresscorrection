@@ -3,8 +3,8 @@ package com.pa.service;
 import com.google.common.collect.Multimap;
 import com.pa.entity.Address;
 import com.pa.entity.Branch;
-import com.pa.entity.GeoNode;
 import com.pa.entity.FieldToken;
+import com.pa.entity.GeoNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * This service is responsible for computing a list of all the candidate solutions, when receiving a {@link Set}
+ * containing all the compound {@link FieldToken} objects.
+ * <p>
+ * Each {@link FieldToken} object is attempted to mapped to a {@link GeoNode} by
+ *
+ * @author Alex Neagu
+ * @author Cristian Fiodorov
+ */
 @Service
 @RequiredArgsConstructor
 public class CandidateGeneratorService {
